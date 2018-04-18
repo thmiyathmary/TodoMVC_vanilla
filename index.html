@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Vanilla ES6・TodoMVS</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+  <div class="center">
+    <h1>todos</h1>
+    <form class="whole" name="form" autocomplete="off" action="javascript:addTodo()">
+      <input type="text" name="inputArea" placeholder="What needs to be done?" onsubmit="javascript:addTodo()">
+    </form>
+    <h6>
+      Double-click to edit a todo<br>
+      Written by Usui<br>
+      Refactored by Usui<br>
+      Part of TodoMVC<br>
+  </h6>
+  </div>
+  <script>
+    const todoList = []
+    const addTodo = (function(){
+      const inputArea = document.form.inputArea
+      return function(){
+        console.log(inputArea.value)
+        todoList.push({name:inputArea.value, isActive:true})
+        inputArea.value = ""
+        console.log(todoList)
+        showTodoList()
+      }
+    })()
+
+    const showTodoList = function(){
+      const form = document.form
+      console.log(form.children.length)
+      if(form.children.length > 1) {
+        form.removeChild(form.lastElementChild)
+      }
+      const table = document.createElement('table')
+
+      todoList.forEach(function(todo,index){
+        const row = table.insertRow(-1)
+        const form = `
+          <td class=checkbox>
+            <input id="${index}" type="checkbox" ` + (todo.isActive ? "" : checked="checked") + `>
+          </td>
+          <td>
+            ${todo.name}
+          </td>
+        `
+        // <input type="text" value=${todo.name} disabled="disabled">
+        row.innerHTML = form
+      })
+      form.appendChild(table)
+
+
+    }
+  </script>
+</body>
+
+</html>

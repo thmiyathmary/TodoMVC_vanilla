@@ -1,0 +1,29 @@
+body {
+  margin: auto;
+}
+
+form.whole {
+  width: 600px;
+  margin: auto;
+}
+
+form.checkbox {
+  width: 20px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+}
+
+td.checkbox {
+  width: 20px;
+}
+
+td {
+  text-align: left;
+}
+
+.center {
+  text-align: center;
+}
