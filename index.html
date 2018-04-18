@@ -10,6 +10,7 @@
   <div class="center">
     <h1>todos</h1>
     <form class="whole" name="form" autocomplete="off" action="javascript:addTodo()">
+      <input type="checkbox" id="toggleAll" onclick="onClickToggleAll()">
       <input type="text" name="inputArea" placeholder="What needs to be done?" onsubmit="javascript:addTodo()">
     </form>
     <h6>
@@ -20,13 +21,16 @@
   </h6>
   </div>
   <script>
-    const todoList = []
-    const addTodo = (function(){
+    let todoList = []
+    const addTodo = (function() {
       const inputArea = document.form.inputArea
-      return function(){
-        if(inputArea.value !== ""){
+      return function() {
+        if (inputArea.value !== "") {
           console.log(inputArea.value)
-          todoList.push({name:inputArea.value, isCompleted:false})
+          todoList.push({
+            name: inputArea.value,
+            isCompleted: false
+          })
           inputArea.value = ""
           console.log(todoList)
           showTodoList()
@@ -34,19 +38,20 @@
       }
     })()
 
-    const showTodoList = function(){
+    const showTodoList = function() {
       const form = document.form
-      if(form.children.length > 1) {
+      while (form.children.length > 2) {
         form.removeChild(form.lastElementChild)
       }
       const table = document.createElement('table')
 
-      todoList.forEach(function(todo,index){
+      todoList.forEach((todo, index) => {
         const row = table.insertRow(-1)
         row.setAttribute('id', 'row' + index)
-        const form = `
+        const rowContents = `
           <td class="checkbox">
-            <input id="checkbox${index}" type="checkbox" onclick="onClickCheckBox(${index})" ` + (todo.isCompleted ? checked="checked" : "" ) + `>
+            <input id="checkbox${index}" type="checkbox" onclick="onClickCheckBox(${index})" ` + (todo.isCompleted ? 'checked="checked"' : '') +
+          `>
           </td>
           <td>
             ${todo.name}
@@ -56,24 +61,79 @@
           </td>
         `
         // <input type="text" value=${todo.name} disabled="disabled">
-        row.innerHTML = form
+        row.innerHTML = rowContents
       })
       form.appendChild(table)
+      if (todoList.length > 0) {
+        const itemNum = todoList.filter(todo => !todo.isCompleted).length
+        const itemLabel = itemNum + ' item' + (itemNum > 1 ? 's' : '') + ' left'
+
+        const bottomTable = document.createElement('table')
+        bottomTable.setAttribute('class', 'bottom')
+        const bottom = bottomTable.insertRow(-1)
+        const bottomContents =
+          `
+          <td class="bottom_left">
+             ${itemLabel}
+          </td>
+          <td>
+            <form class="radio" name="radioform" action="javascript:addTodo()">
+              <input class="radio" type="radio" name="all" value="All" checked="checked">ALL
+              <input class="radio" type="radio" name="active" value="Active">Active
+              <input class="radio" type="radio" name="completed" value="Completed">Completed
+            </form>
+          </td>
+          <td class="bottom_right">
+            <input type="button" value="Clear completed" onclick="onClickClear()">
+          </td>
+        `
+        bottom.innerHTML = bottomContents
+        form.appendChild(bottomTable)
+      }
+      checkAllIsCompleted()
     }
 
-    const onClickCheckBox = function(index = -1){
-      if(index !== -1){
+    const onClickCheckBox = function(index = -1) {
+      if (index !== -1) {
         const checkbox = document.getElementById('checkbox' + index)
         todoList[index].isCompleted = checkbox.checked
       }
     }
 
-    const onClickRemove = function(index = -1){
-      if(index !== -1){
-        todoList.splice(index,1)
+    const onClickRemove = function(index = -1) {
+      if (index !== -1) {
+        todoList.splice(index, 1)
         showTodoList()
       }
     }
+    const onClickClear = function() {
+      todoList = todoList.filter(todo => !todo.isCompleted)
+      showTodoList()
+    }
+
+    const onClickToggleAll = (function() {
+      const toggleCheckbox = document.getElementById('toggleAll')
+      return function() {
+        if (toggleCheckbox.checked) {
+          todoList.forEach(todo => todo.isCompleted = true)
+        } else {
+          todoList.forEach(todo => todo.isCompleted = false)
+        }
+        toggleCheckbox.checked = !toggleCheckbox.checked
+        showTodoList()
+      }
+    })()
+
+    const checkAllIsCompleted = (function() {
+      const toggleCheckbox = document.getElementById('toggleAll')
+      return function() {
+        if (todoList.length !== 0 && todoList.length === todoList.filter(todo => todo.isCompleted).length){
+          toggleCheckbox.checked = true
+        } else {
+          toggleCheckbox.checked = false
+        }
+      }
+    })()
   </script>
 </body>
 

@@ -1,5 +1,12 @@
 body {
   margin: auto;
+  background-color: #FFFAFA;
+}
+
+h1 {
+  font-size: 80px;
+  font-family: Arial,sans-serif;
+  color: #FFE4E1;
 }
 
 form.whole {
@@ -14,11 +21,21 @@ form.checkbox {
 
 input {
   width: 100%;
+  height: 20px;
+  font-style: oblique;
+}
+
+input.radio {
+  width: 5%;
 }
 
 table {
   width: 600px;
   margin: auto;
+}
+
+tr {
+  height: 20px;
 }
 
 td {
@@ -33,6 +50,29 @@ td.checkbox {
 td.remove {
   float: right;
   width: 40px;
+}
+
+td.center {
+  width: 30%;
+  margin: auto;
+}
+
+td.bottom_left {
+  float: left;
+  text-align: left;
+  width: 100px;
+}
+
+td.bottom_right {
+  float: right;
+  text-align: right;
+  width: 100px;
+  margin: auto;
+}
+
+div.bottom {
+  width: 600px;
+  margin: auto;
 }
 
 .center {
