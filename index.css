@@ -16,12 +16,23 @@ input {
   width: 100%;
 }
 
-td.checkbox {
-  width: 20px;
+table {
+  width: 600px;
+  margin: auto;
 }
 
 td {
   text-align: left;
+  width:
+}
+
+td.checkbox {
+  width: 20px;
+}
+
+td.remove {
+  float: right;
+  width: 40px;
 }
 
 .center {

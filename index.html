@@ -24,17 +24,18 @@
     const addTodo = (function(){
       const inputArea = document.form.inputArea
       return function(){
-        console.log(inputArea.value)
-        todoList.push({name:inputArea.value, isActive:true})
-        inputArea.value = ""
-        console.log(todoList)
-        showTodoList()
+        if(inputArea.value !== ""){
+          console.log(inputArea.value)
+          todoList.push({name:inputArea.value, isCompleted:false})
+          inputArea.value = ""
+          console.log(todoList)
+          showTodoList()
+        }
       }
     })()
 
     const showTodoList = function(){
       const form = document.form
-      console.log(form.children.length)
       if(form.children.length > 1) {
         form.removeChild(form.lastElementChild)
       }
@@ -42,20 +43,36 @@
 
       todoList.forEach(function(todo,index){
         const row = table.insertRow(-1)
+        row.setAttribute('id', 'row' + index)
         const form = `
-          <td class=checkbox>
-            <input id="${index}" type="checkbox" ` + (todo.isActive ? "" : checked="checked") + `>
+          <td class="checkbox">
+            <input id="checkbox${index}" type="checkbox" onclick="onClickCheckBox(${index})" ` + (todo.isCompleted ? checked="checked" : "" ) + `>
           </td>
           <td>
             ${todo.name}
+          </td>
+          <td class="remove">
+            <input type="button" value="X" onclick="onClickRemove(${index})">
           </td>
         `
         // <input type="text" value=${todo.name} disabled="disabled">
         row.innerHTML = form
       })
       form.appendChild(table)
+    }
 
+    const onClickCheckBox = function(index = -1){
+      if(index !== -1){
+        const checkbox = document.getElementById('checkbox' + index)
+        todoList[index].isCompleted = checkbox.checked
+      }
+    }
 
+    const onClickRemove = function(index = -1){
+      if(index !== -1){
+        todoList.splice(index,1)
+        showTodoList()
+      }
     }
   </script>
 </body>
