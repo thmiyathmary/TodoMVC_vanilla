@@ -10,18 +10,19 @@
   <div class="center">
     <h1>todos</h1>
     <form class="whole" name="form" autocomplete="off" action="javascript:addTodo()">
-      <input type="checkbox" id="toggleAll" onclick="onClickToggleAll()">
-      <input type="text" name="inputArea" placeholder="What needs to be done?" onsubmit="javascript:addTodo()">
+      <input class="radio" type="checkbox" id="toggleAll" onclick="onClickToggleAll()">
+      <input type="text" id="maintext" name="inputArea" placeholder="What needs to be done?" onsubmit="javascript:addTodo()">
     </form>
     <h6>
-      Double-click to edit a todo<br>
+      Double-click to edit a todo(WIP)<br>
       Written by Usui<br>
       Refactored by Usui<br>
-      Part of TodoMVC<br>
+      Part of TodoMVC(Uso)<br>
   </h6>
   </div>
   <script>
     let todoList = []
+    let radioState = "All"
     const addTodo = (function() {
       const inputArea = document.form.inputArea
       return function() {
@@ -46,41 +47,40 @@
       const table = document.createElement('table')
 
       todoList.forEach((todo, index) => {
-        const row = table.insertRow(-1)
-        row.setAttribute('id', 'row' + index)
-        const rowContents = `
-          <td class="checkbox">
-            <input id="checkbox${index}" type="checkbox" onclick="onClickCheckBox(${index})" ` + (todo.isCompleted ? 'checked="checked"' : '') +
-          `>
-          </td>
-          <td>
-            ${todo.name}
-          </td>
-          <td class="remove">
-            <input type="button" value="X" onclick="onClickRemove(${index})">
-          </td>
-        `
-        // <input type="text" value=${todo.name} disabled="disabled">
-        row.innerHTML = rowContents
+        if(isDisplayed(todo.isCompleted)){
+          const row = table.insertRow(-1)
+          row.setAttribute('id', 'row' + index)
+          const rowContents = `
+            <td class="checkbox">
+              <input id="checkbox${index}" type="checkbox" onclick="onClickCheckbox(${index})" ${todo.isCompleted ? 'checked="checked"' : ''}>
+            </td>
+            <td ${todo.isCompleted ? 'class="del"' : ''}>
+              ${todo.name}
+            </td>
+            <td class="remove">
+              <input type="button" value="X" onclick="onClickRemove(${index})">
+            </td>
+          `
+          // <input type="text" value=${todo.name} disabled="disabled">
+          row.innerHTML = rowContents
+        }
       })
       form.appendChild(table)
       if (todoList.length > 0) {
         const itemNum = todoList.filter(todo => !todo.isCompleted).length
         const itemLabel = itemNum + ' item' + (itemNum > 1 ? 's' : '') + ' left'
-
         const bottomTable = document.createElement('table')
         bottomTable.setAttribute('class', 'bottom')
         const bottom = bottomTable.insertRow(-1)
         const bottomContents =
-          `
-          <td class="bottom_left">
+          `<td class="bottom_left">
              ${itemLabel}
           </td>
           <td>
-            <form class="radio" name="radioform" action="javascript:addTodo()">
-              <input class="radio" type="radio" name="all" value="All" checked="checked">ALL
-              <input class="radio" type="radio" name="active" value="Active">Active
-              <input class="radio" type="radio" name="completed" value="Completed">Completed
+            <form id="radioForm" class="radio" name="radioForm">
+              <input class="radio" type="radio" name="radioCompleted" value="All" onclick="changeRadioState('All')" ${ radioState === 'All' ? checked="checked" : ''}>All
+              <input class="radio" type="radio" name="radioCompleted" value="Active" onclick="changeRadioState('Active')" ${ radioState === 'Active' ? checked="checked" : ''}>Active
+              <input class="radio" type="radio" name="radioCompleted" value="Completed" onclick="changeRadioState('Completed')" ${ radioState === 'Completed' ? checked="checked" : ''}>Completed
             </form>
           </td>
           <td class="bottom_right">
@@ -93,10 +93,15 @@
       checkAllIsCompleted()
     }
 
-    const onClickCheckBox = function(index = -1) {
+    const isDisplayed = function(isCompleted = false) {
+      return radioState === 'All' || radioState === 'Active' && !isCompleted || radioState === 'Completed' && isCompleted
+    }
+
+    const onClickCheckbox = function(index = -1) {
       if (index !== -1) {
         const checkbox = document.getElementById('checkbox' + index)
         todoList[index].isCompleted = checkbox.checked
+        showTodoList()
       }
     }
 
@@ -134,6 +139,12 @@
         }
       }
     })()
+
+    const changeRadioState = function(newState = 'All') {
+      radioState = newState
+      console.log(radioState)
+      showTodoList()
+    }
   </script>
 </body>
 
